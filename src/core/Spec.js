@@ -40,12 +40,15 @@ getJasmineRequireObj().Spec = function(j$) {
     return this.expectationFactory(actual, this);
   };
 
-  Spec.prototype.execute = function(onComplete) {
+  Spec.prototype.execute = function(onComplete, enabled) {
     var self = this;
+    if (enabled === false && !this.markedPending) {
+      this.disable();
+    }
 
     this.onStart(this);
 
-    if (this.markedPending || this.disabled) {
+    if (!this.isExecutable()) {
       complete();
       return;
     }
@@ -94,6 +97,11 @@ getJasmineRequireObj().Spec = function(j$) {
     if (message) {
       this.result.pendingReason = message;
     }
+  };
+
+  Spec.prototype.getResult = function() {
+    this.result.status = this.status();
+    return this.result;
   };
 
   Spec.prototype.status = function() {
