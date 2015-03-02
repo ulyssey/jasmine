@@ -82,7 +82,7 @@ getJasmineRequireObj().TreeProcessor = function() {
         }
 
         stats[node.id] = {
-          executable: hasExecutableChild,
+          executable: hasExecutableChild
         };
 
         segmentChildren(node, stats[node.id], executableIndex);
@@ -107,13 +107,17 @@ getJasmineRequireObj().TreeProcessor = function() {
           lastMax = defaultMax,
           orderedChildSegments = orderChildSegments(node.children);
 
+      function isSegmentBoundary(minIndex) {
+        return lastMax !== defaultMax && minIndex !== defaultMin && lastMax < minIndex - 1;
+      }
+
       for (var i = 0; i < orderedChildSegments.length; i++) {
         var childSegment = orderedChildSegments[i],
-            maxIndex = childSegment.max,
-            minIndex = childSegment.min;
+          maxIndex = childSegment.max,
+          minIndex = childSegment.min;
 
-        if (lastMax !== defaultMax && minIndex !== defaultMin && lastMax < minIndex - 1) {
-          currentSegment = { index: result.length, owner: node, nodes: [], min: defaultMin, max: defaultMin };
+        if (isSegmentBoundary(minIndex)) {
+          currentSegment = {index: result.length, owner: node, nodes: [], min: defaultMin, max: defaultMin};
           result.push(currentSegment);
         }
 
@@ -177,14 +181,6 @@ getJasmineRequireObj().TreeProcessor = function() {
           fn: function(done) { node.execute(done, stats[node.id].executable); }
         };
       }
-    }
-
-    function minValue(array) {
-      return Math.min.apply(null, array);
-    }
-
-    function maxValue(array) {
-      return Math.max.apply(null, array);
     }
 
     function wrapChildren(node, segmentNumber) {

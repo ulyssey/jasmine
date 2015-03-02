@@ -162,7 +162,7 @@ describe("Spec", function() {
 
     spec.execute(undefined, false);
 
-    expect(spec.status()).toBe('disabled');
+    expect(spec.result.status).toBe('disabled');
 
     expect(fakeQueueRunner).not.toHaveBeenCalled();
     expect(specBody).not.toHaveBeenCalled();

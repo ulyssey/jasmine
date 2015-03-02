@@ -42,14 +42,11 @@ getJasmineRequireObj().Spec = function(j$) {
 
   Spec.prototype.execute = function(onComplete, enabled) {
     var self = this;
-    if (enabled === false && !this.markedPending) {
-      this.disable();
-    }
 
     this.onStart(this);
 
-    if (!this.isExecutable()) {
-      complete();
+    if (!this.isExecutable() || enabled === false) {
+      complete(enabled);
       return;
     }
 
@@ -63,8 +60,8 @@ getJasmineRequireObj().Spec = function(j$) {
       userContext: this.userContext()
     });
 
-    function complete() {
-      self.result.status = self.status();
+    function complete(enabledAgain) {
+      self.result.status = self.status(enabledAgain);
       self.resultCallback(self.result);
 
       if (onComplete) {
@@ -104,8 +101,8 @@ getJasmineRequireObj().Spec = function(j$) {
     return this.result;
   };
 
-  Spec.prototype.status = function() {
-    if (this.disabled) {
+  Spec.prototype.status = function(enabled) {
+    if (this.disabled || enabled === false) {
       return 'disabled';
     }
 

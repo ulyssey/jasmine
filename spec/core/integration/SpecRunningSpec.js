@@ -1,6 +1,5 @@
 describe("jasmine spec running", function () {
   var env;
-  var fakeTimer;
 
   beforeEach(function() {
     env = new j$.Env();
