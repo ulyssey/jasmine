@@ -121,4 +121,32 @@ describe("SpyStrategy", function() {
     expect(spyStrategy.callFake()).toBe(spy);
     expect(spyStrategy.stub()).toBe(spy);
   });
+
+  it("allow to check if returnValue has the same result as callThrough", function(){
+    var originalFn = function(value){ return value*2;},
+        spyStrategy = new j$.SpyStrategy({fn: originalFn});
+
+    spyStrategy.returnValue(2);
+    spyStrategy.compareToOriginalFn();
+    spyStrategy.exec(1);
+    spyStrategy.returnValues(4, 6, 8);
+    spyStrategy.exec(2);
+    spyStrategy.exec(3);
+    spyStrategy.exec(4);
+    spyStrategy.callFake(function () {
+      return 10;
+    });
+    spyStrategy.exec(5);
+  });
+
+  it("allow to check if the original function throw an error in the same conditions", function(){
+    var originalFn = function(){ throw new Error()},
+      spyStrategy = new j$.SpyStrategy({fn: originalFn});
+
+    spyStrategy.throwError();
+    spyStrategy.compareToOriginalFn();
+    expect(function () {
+      spyStrategy.exec()
+    }).toThrowError();
+  });
 });
